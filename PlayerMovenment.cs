@@ -5,18 +5,25 @@ using UnityEngine.UI;
 
 public class PlayerMovenment : MonoBehaviour
 {
-    private enum State { Idle, Running, Jumping, }
+    private enum State { Idle, Running, Jumping, Falling }
     private State state = State.Idle;
     public CharacterController2D controller;
     public Animator animator;
-    private Rigidbody2D rb;
+    public Rigidbody2D rb;
     public float runSpeed = 40f;
     float horizontalMove = 0f;
+    public float knockback;
+    public float knockbackCount;
+    public float knockbackLength;
+    public bool knockFromRight;
+
     bool jump = false;
     bool crouch = false;
+    bool run = false;
+    bool isidle = false;
     [SerializeField] private int coin = 0;
     [SerializeField] private Text coinText;
-    [SerializeField] private float hurtforce = 10f;
+    [SerializeField] 
 
 
 
@@ -32,33 +39,49 @@ public class PlayerMovenment : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        horizontalMove = Input.GetAxisRaw("Horizontal") * runSpeed;
-        animator.SetFloat("Speed", Mathf.Abs(horizontalMove));
-
-        if (Input.GetButtonDown("Jump"))
+        if (knockbackCount <= 0)
         {
-            jump = true;
-            animator.SetBool("IsJumping", true);
-            state = State.Jumping;
+            horizontalMove = Input.GetAxisRaw("Horizontal") * runSpeed;
+            animator.SetFloat("Speed", Mathf.Abs(horizontalMove));
+
+            if (Input.GetButtonDown("Jump"))
+            {
+                jump = true;
+                animator.SetBool("IsJumping", true);
+                state = State.Jumping;
+            }
+
+            if (Input.GetButtonDown("Crouch"))
+
+            {
+                crouch = true;
+                Debug.Log("is working");
+
+            }
+            else if (Input.GetButtonUp("Crouch"))
+
+            {
+                crouch = false;
+            }
+
+        }
+        else
+        {
+            if (knockFromRight)            
+                rb.velocity = new Vector2(-knockback, knockback);            
+            if (!knockFromRight)            
+                rb.velocity = new Vector2(knockback, knockback);
+            knockbackCount -= Time.deltaTime;
+            
         }
 
-        if (Input.GetButtonDown("Crouch"))
-
-        {
-            crouch = true;
-            Debug.Log("is working");
-
+            //sate ,machine call
+            VelocityState();
+            //animator.SetInteger ("Speed", (int)state);
+        
         }
-        else if (Input.GetButtonUp("Crouch"))
-
-        {
-            crouch = false;
-
-
-        }
-        VelocityState();
-    }
-    public void OnLanding() {
+    public void OnLanding()
+    {
 
         animator.SetBool("IsJumping", false);
 
@@ -81,8 +104,6 @@ public class PlayerMovenment : MonoBehaviour
         }
     }
 
-
-
     void FixedUpdate()
 
     {
@@ -90,18 +111,35 @@ public class PlayerMovenment : MonoBehaviour
         jump = false;
     }
 
+    //simple state machine implimentation
     private void VelocityState()
     {
-        if(state == State.Jumping)
+        if (state == State.Jumping)
         {
-            jump = true;
+
             Debug.Log("i'm really jummping");
         }
-        if(Mathf.Abs(runSpeed) > Mathf.Epsilon)
+
+
+        if (Mathf.Abs(horizontalMove) > Mathf.Epsilon)
         {
             //Moving
             state = State.Running;
             Debug.Log("i'm really moving");
+
+        }
+        //if (jump == true && horizontalMove < 0.01f  && isidle == true)
+        //{
+
+        //    state = State.Falling;
+        //        Debug.Log("i'm really falling");
+        //    }
+
+            else
+            {
+                state = State.Idle;
+                Debug.Log("i'm really idling");
+            }
         }
     }
-}
+
