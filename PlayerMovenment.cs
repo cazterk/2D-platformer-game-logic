@@ -20,11 +20,10 @@ public class PlayerMovenment : MonoBehaviour
     bool jump = false;
     bool crouch = false;
     bool run = false;
-    bool isidle = false;
+   
     [SerializeField] private int coin = 0;
     [SerializeField] private Text coinText;
-    [SerializeField] 
-
+    
 
 
 
@@ -39,15 +38,16 @@ public class PlayerMovenment : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (knockbackCount <= 0)
+   /**     if (knockbackCount <= 0)
         {
             horizontalMove = Input.GetAxisRaw("Horizontal") * runSpeed;
             animator.SetFloat("Speed", Mathf.Abs(horizontalMove));
-
+**/
             if (Input.GetButtonDown("Jump"))
             {
-                jump = true;
+               
                 animator.SetBool("IsJumping", true);
+                 jump = true;
                 state = State.Jumping;
             }
 
@@ -65,7 +65,7 @@ public class PlayerMovenment : MonoBehaviour
             }
 
         }
-        else
+   /**     else
         {
             if (knockFromRight)            
                 rb.velocity = new Vector2(-knockback, knockback);            
@@ -73,7 +73,7 @@ public class PlayerMovenment : MonoBehaviour
                 rb.velocity = new Vector2(knockback, knockback);
             knockbackCount -= Time.deltaTime;
             
-        }
+     **/   }
 
             //sate ,machine call
             VelocityState();
@@ -84,6 +84,8 @@ public class PlayerMovenment : MonoBehaviour
     {
 
         animator.SetBool("IsJumping", false);
+        jump = false;
+            
 
     }
     public void OnCrouching(bool isCrouching)
@@ -92,7 +94,16 @@ public class PlayerMovenment : MonoBehaviour
         animator.SetBool("IsCrouching", isCrouching);
 
 
+
     }
+
+    //public void OnFalling( bool falling)
+    //{
+    //    animator.SetBool("Falling", falling);
+    //}
+
+
+
     void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.tag == "Coin")
@@ -128,18 +139,18 @@ public class PlayerMovenment : MonoBehaviour
             Debug.Log("i'm really moving");
 
         }
-        //if (jump == true && horizontalMove < 0.01f  && isidle == true)
+        //if (jump == false && horizontalMove > 0.01f)
         //{
 
-        //    state = State.Falling;
+            
         //        Debug.Log("i'm really falling");
-        //    }
+        //   }
 
             else
             {
                 state = State.Idle;
                 Debug.Log("i'm really idling");
             }
-        }
+        }  
     }
 

@@ -102,35 +102,41 @@ public class EnemyAl : MonoBehaviour
     }
     void OnCollisionEnter2D(Collision2D other)
     {
-        Player.GetComponent<Rigidbody>();
-
-        //if (other.gameObject.tag == "Player")
-        //{
-
-        //    if (Player.gameObject.transform.position.x > transform.position.x)
-        //    {
-        //        rb.velocity = new Vector2(-hurtforce, rb.velocity.y);
-        //    }
-        //    Destroy(Player.gameObject);
-
-        //}
-        ////else
-        ////{
-        ////    rb.velocity = new vector2(hurtforce, rb.velocity.y);
-        ////}
-
-        if (other.gameObject.tag == "Enemy")
+      
+        
+        if(other.gameObject.tag == "Player")
         {
-            var rel = rb.position - other.rigidbody.position;
-            if (rel.y > 0.5f)
-            {
-                rel.y = 0; // If you don't want to push him upwards.
-                rel.Normalize();
-                rb.AddForce(rel * hurtforce);
-            }
+            Debug.Log("tigger");
+        }
+        
+        
+        
+        
+        //Player.GetComponent<Rigidbody>();
+        ////if (other.gameObject.tag == "Player")        ////{
+
+        ////    if (Player.gameObject.transform.position.x > transform.position.x)
+        ////    {
+        ////        rb.velocity = new Vector2(-hurtforce, rb.velocity.y);
+        ////    }
+        ////    Destroy(Player.gameObject);
+        ////}
+        //////else
+        //////{
+        //////    rb.velocity = new vector2(hurtforce, rb.velocity.y);
+        //////}
+        //if (other.gameObject.tag == "Enemy")
+        //{
+        //    var rel = rb.position - other.rigidbody.position;
+        //    if (rel.y > 0.5f)
+        //    {
+        //        rel.y = 0; // If you don't want to push him upwards.
+        //        rel.Normalize();
+        //        rb.AddForce(rel * hurtforce);
+        //    }
 
         }
-        }
+        
 
 
 }
