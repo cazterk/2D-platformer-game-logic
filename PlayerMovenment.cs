@@ -20,10 +20,10 @@ public class PlayerMovenment : MonoBehaviour
     bool jump = false;
     bool crouch = false;
     bool run = false;
-   
+
     [SerializeField] private int coin = 0;
     [SerializeField] private Text coinText;
-    
+
 
 
 
@@ -38,54 +38,53 @@ public class PlayerMovenment : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-   /**     if (knockbackCount <= 0)
+        /**     if (knockbackCount <= 0)
+             {
+                 horizontalMove = Input.GetAxisRaw("Horizontal") * runSpeed;
+                 animator.SetFloat("Speed", Mathf.Abs(horizontalMove));
+     **/
+        if (Input.GetButtonDown("Jump"))
         {
-            horizontalMove = Input.GetAxisRaw("Horizontal") * runSpeed;
-            animator.SetFloat("Speed", Mathf.Abs(horizontalMove));
-**/
-            if (Input.GetButtonDown("Jump"))
-            {
-               
-                animator.SetBool("IsJumping", true);
-                 jump = true;
-                state = State.Jumping;
-            }
 
-            if (Input.GetButtonDown("Crouch"))
+            animator.SetBool("IsJumping", true);
+            jump = true;
+            state = State.Jumping;
+        }
 
-            {
-                crouch = true;
-                Debug.Log("is working");
+        if (Input.GetButtonDown("Crouch"))
 
-            }
-            else if (Input.GetButtonUp("Crouch"))
-
-            {
-                crouch = false;
-            }
+        {
+            crouch = true;
+            Debug.Log("is working");
 
         }
-   /**     else
-        {
-            if (knockFromRight)            
-                rb.velocity = new Vector2(-knockback, knockback);            
-            if (!knockFromRight)            
-                rb.velocity = new Vector2(knockback, knockback);
-            knockbackCount -= Time.deltaTime;
-            
-     **/   }
+        else if (Input.GetButtonUp("Crouch"))
 
-            //sate ,machine call
-            VelocityState();
-            //animator.SetInteger ("Speed", (int)state);
-        
+        {
+            crouch = false;
         }
+
+    }
+    /**     else
+         {
+             if (knockFromRight)            
+                 rb.velocity = new Vector2(-knockback, knockback);            
+             if (!knockFromRight)            
+                 rb.velocity = new Vector2(knockback, knockback);
+             knockbackCount -= Time.deltaTime;            
+      **/
+
+    //sate ,machine call
+    VelocityState();
+    //animator.SetInteger ("Speed", (int)state);
+
+
     public void OnLanding()
     {
 
         animator.SetBool("IsJumping", false);
         jump = false;
-            
+
 
     }
     public void OnCrouching(bool isCrouching)
@@ -142,15 +141,16 @@ public class PlayerMovenment : MonoBehaviour
         //if (jump == false && horizontalMove > 0.01f)
         //{
 
-            
+
         //        Debug.Log("i'm really falling");
         //   }
 
-            else
-            {
-                state = State.Idle;
-                Debug.Log("i'm really idling");
-            }
-        }  
+        else
+        {
+            state = State.Idle;
+            Debug.Log("i'm really idling");
+        }
     }
+}
+
 
