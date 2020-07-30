@@ -5,24 +5,18 @@ using UnityEngine.UI;
 
 public class PlayerMovenment : MonoBehaviour
 {
-    private enum State { Idle, Running, Jumping, Falling }
+    private enum State { Idle, Running, Jumping, }
     private State state = State.Idle;
     public CharacterController2D controller;
     public Animator animator;
     public Rigidbody2D rb;
     public float runSpeed = 40f;
     float horizontalMove = 0f;
-    public float knockback;
-    public float knockbackCount;
-    public float knockbackLength;
-    public bool knockFromRight;
-
     bool jump = false;
     bool crouch = false;
-    bool run = false;
-
     [SerializeField] private int coin = 0;
     [SerializeField] private Text coinText;
+    [SerializeField] private float hurtforce = 10f;
 
 
 
@@ -38,16 +32,13 @@ public class PlayerMovenment : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        /**     if (knockbackCount <= 0)
-             {
-                 horizontalMove = Input.GetAxisRaw("Horizontal") * runSpeed;
-                 animator.SetFloat("Speed", Mathf.Abs(horizontalMove));
-     **/
+        horizontalMove = Input.GetAxisRaw("Horizontal") * runSpeed;
+        animator.SetFloat("Speed", Mathf.Abs(horizontalMove));
+
         if (Input.GetButtonDown("Jump"))
         {
-
-            animator.SetBool("IsJumping", true);
             jump = true;
+            animator.SetBool("IsJumping", true);
             state = State.Jumping;
         }
 
@@ -62,29 +53,17 @@ public class PlayerMovenment : MonoBehaviour
 
         {
             crouch = false;
+
+
         }
-
+        VelocityState();
     }
-    /**     else
-         {
-             if (knockFromRight)            
-                 rb.velocity = new Vector2(-knockback, knockback);            
-             if (!knockFromRight)            
-                 rb.velocity = new Vector2(knockback, knockback);
-             knockbackCount -= Time.deltaTime;            
-      **/
-
-    //sate ,machine call
-    VelocityState();
-    //animator.SetInteger ("Speed", (int)state);
 
 
     public void OnLanding()
     {
 
         animator.SetBool("IsJumping", false);
-        jump = false;
-
 
     }
     public void OnCrouching(bool isCrouching)
@@ -93,16 +72,7 @@ public class PlayerMovenment : MonoBehaviour
         animator.SetBool("IsCrouching", isCrouching);
 
 
-
     }
-
-    //public void OnFalling( bool falling)
-    //{
-    //    animator.SetBool("Falling", falling);
-    //}
-
-
-
     void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.tag == "Coin")
@@ -113,44 +83,50 @@ public class PlayerMovenment : MonoBehaviour
 
         }
     }
+    void OnCollisionEnter2D(Collision2D other)
+    {
 
-    void FixedUpdate()
+        if (other.gameObject.tag == "Enemy")
+
+        {
+            if (other.gameObject.transform.position.x > transform.position.x)
+            {
+                rb.velocity = new Vector2(-hurtforce, rb.velocity.y);
+                Debug.Log("-hurtforce is working");
+
+            }
+            else
+            {
+                rb.velocity = new Vector2(hurtforce, rb.velocity.y);
+                Debug.Log("hurtforce is working");
+            }
+        }
+      
+
+
+    }
+
+
+
+        void FixedUpdate()
 
     {
         controller.Move(horizontalMove * Time.fixedDeltaTime, crouch, jump);
         jump = false;
     }
 
-    //simple state machine implimentation
     private void VelocityState()
     {
         if (state == State.Jumping)
         {
-
+            
             Debug.Log("i'm really jummping");
         }
-
-
-        if (Mathf.Abs(horizontalMove) > Mathf.Epsilon)
+        if (Mathf.Abs(runSpeed) > Mathf.Epsilon)
         {
             //Moving
             state = State.Running;
             Debug.Log("i'm really moving");
-
-        }
-        //if (jump == false && horizontalMove > 0.01f)
-        //{
-
-
-        //        Debug.Log("i'm really falling");
-        //   }
-
-        else
-        {
-            state = State.Idle;
-            Debug.Log("i'm really idling");
         }
     }
 }
-
-
