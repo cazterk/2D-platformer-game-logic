@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class PlayerMovenment : MonoBehaviour
 {
-    private enum State { Idle, Running, Jumping, }
+    private enum State { Idle, Running, Jumping, Hurt }
     private State state = State.Idle;
     public CharacterController2D controller;
     public Animator animator;
@@ -34,12 +34,14 @@ public class PlayerMovenment : MonoBehaviour
     {
         horizontalMove = Input.GetAxisRaw("Horizontal") * runSpeed;
         animator.SetFloat("Speed", Mathf.Abs(horizontalMove));
+        
 
         if (Input.GetButtonDown("Jump"))
         {
             jump = true;
             animator.SetBool("IsJumping", true);
             state = State.Jumping;
+
         }
 
         if (Input.GetButtonDown("Crouch"))
@@ -47,8 +49,10 @@ public class PlayerMovenment : MonoBehaviour
         {
             crouch = true;
             Debug.Log("is working");
+           
 
         }
+
         else if (Input.GetButtonUp("Crouch"))
 
         {
@@ -83,25 +87,35 @@ public class PlayerMovenment : MonoBehaviour
 
         }
     }
+    // apply knockback effect to player
     void OnCollisionEnter2D(Collision2D other)
     {
 
         if (other.gameObject.tag == "Enemy")
 
         {
+            
             if (other.gameObject.transform.position.x > transform.position.x)
             {
                 rb.velocity = new Vector2(-hurtforce, rb.velocity.y);
-                Debug.Log("-hurtforce is working");
+                 Debug.Log("-hurtforce is working");
+                animator.SetBool("IsHurt", true);
+
 
             }
             else
             {
                 rb.velocity = new Vector2(hurtforce, rb.velocity.y);
                 Debug.Log("hurtforce is working");
+                animator.SetBool("IsHurt", true);
+
             }
+            state = State.Hurt;
+            animator.SetBool("IsHurt", true);
+
+
         }
-      
+     
 
 
     }
@@ -113,6 +127,7 @@ public class PlayerMovenment : MonoBehaviour
     {
         controller.Move(horizontalMove * Time.fixedDeltaTime, crouch, jump);
         jump = false;
+        animator.SetBool("IsHurt", false);
     }
 
     private void VelocityState()
@@ -121,12 +136,31 @@ public class PlayerMovenment : MonoBehaviour
         {
             
             Debug.Log("i'm really jummping");
+            animator.SetBool("IsHurt", false);
         }
-        if (Mathf.Abs(runSpeed) > Mathf.Epsilon)
+
+       else if (Mathf.Abs(horizontalMove) > 0.1f)
         {
             //Moving
             state = State.Running;
             Debug.Log("i'm really moving");
+           
+        }
+
+        else if (state != State.Hurt)
+        {
+            animator.SetBool("IsHurt", false);
+        }
+
+        else if (state == State.Hurt)
+        {
+            Debug.Log("Ishurt is working");
+           
+        }
+        else
+        {
+            state = State.Idle;
+            Debug.Log("isidle is true");
         }
     }
 }
