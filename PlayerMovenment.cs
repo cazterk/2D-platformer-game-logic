@@ -99,7 +99,7 @@ public class PlayerMovenment : MonoBehaviour
             {
                 rb.velocity = new Vector2(-hurtforce, rb.velocity.y);
                  Debug.Log("-hurtforce is working");
-                animator.SetBool("IsHurt", true);
+               
 
 
             }
@@ -107,7 +107,7 @@ public class PlayerMovenment : MonoBehaviour
             {
                 rb.velocity = new Vector2(hurtforce, rb.velocity.y);
                 Debug.Log("hurtforce is working");
-                animator.SetBool("IsHurt", true);
+               
 
             }
             state = State.Hurt;

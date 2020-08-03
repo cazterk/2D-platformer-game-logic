@@ -7,6 +7,8 @@ public class Headcollider : MonoBehaviour
 
     GameObject Enemy;
     public BoxCollider2D headcollider;
+    
+
     // Start is called before the first frame update
     void Start()
     {
@@ -18,21 +20,27 @@ public class Headcollider : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D collision)
     {
-        // if (other.gameObject.name == headcollider.name) 
+        //jump on frog
+        Frog frog = Enemy.GetComponent<Frog>();
+        frog.JumpedOn();
 
-                Enemy.GetComponent<SpriteRenderer>().flipY = true;
-                Enemy.GetComponent<Collider2D>().enabled = false;
-                Vector3 movement = new Vector3(Random.Range(40, 70), Random.Range(-40, 40), 0f);
-                Enemy.transform.position = Enemy.transform.position + movement * Time.captureFramerate;
-                Destroy(Enemy.gameObject);
-                Debug.Log("danger mec is triggering");
+           //*********unused*********//
+        // if (other.gameObject.name == headcollider.name)
+        //Enemy.GetComponent<SpriteRenderer>().flipY = true;
+        // Enemy.GetComponent<Collider2D>().enabled = false;
+        //Vector3 movement = new Vector3(Random.Range(40, 70), Random.Range(-40, 40), 0f);
+        //Enemy.transform.position = Enemy.transform.position + movement * Time.captureFramerate;                
 
-        /**} else
-            {
-                Destroy(other.gameObject);
-            }
-        **/
+
+
+
+        Debug.Log(" jump on is triggering");
     }
-    
+     void OnTriggerEnter2D(Collider other)
+    {
+        //jump on eagle
+        Eagle eagle = Enemy.GetComponent<Eagle>();
+        eagle.JumpedOnEagle();
     }
+}
     
