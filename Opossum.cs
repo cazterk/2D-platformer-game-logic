@@ -2,41 +2,32 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Frog : Enemy
+public class Opossum : Enemy
 {
     [SerializeField] private float leftCap;
     [SerializeField] private float rightCap;
 
-    [SerializeField] private float jumpLenth = 10f;
-    [SerializeField] private float jumpHeight = 15f;
+    //[SerializeField] private float jumpLenth = 10f;
+   //[SerializeField] private float jumpHeight = 15f;
     [SerializeField] private LayerMask ground;
     private Collider2D coll;
     private Rigidbody2D rb;
 
     private bool facingLeft = true;
+    public float moveSpeed = 3f;
 
+    // Start is called before the first frame update
     protected override void Start()
     {
         base.Start();
         coll = GetComponent<Collider2D>();
         rb = GetComponent<Rigidbody2D>();
-        
     }
 
-
-    private void Update()
+    // Update is called once per frame
+    void Update()
     {
-        if (animator.GetBool("Jumping"))
-        {
-            if(rb.velocity.y < 0.1)
-            {
-                animator.SetBool("Falling", true);
-                animator.SetBool("Jumping", false);
-            }
-        }
-        if (coll.IsTouchingLayers(ground) && animator.GetBool("Falling")){
-            animator.SetBool("Falling", false);
-        }
+        Move();
     }
 
     private void Move()
@@ -52,14 +43,8 @@ public class Frog : Enemy
                     transform.localScale = new Vector3(1, 1);
                 }
 
+                transform.Translate(Vector3.left * Time.deltaTime  * moveSpeed);
 
-                // test if frog is on ground
-                if (coll.IsTouchingLayers(ground))
-                {
-                    //jump
-                    rb.velocity = new Vector2(-jumpLenth, jumpHeight);
-                    animator.SetBool("Jumping", true);
-                }
             }
             // if it is not we are going to face right
             else
@@ -77,15 +62,8 @@ public class Frog : Enemy
                 {
                     transform.localScale = new Vector3(-1, 1);
                 }
+                transform.Translate(Vector3.right * Time.deltaTime * moveSpeed);
 
-
-                // test if frog is on ground
-                if (coll.IsTouchingLayers(ground))
-                {
-                    //jump
-                    rb.velocity = new Vector2(jumpLenth, jumpHeight);
-                    animator.SetBool("Jumping", true);
-                }
             }
             // if it is not we are going to face right
             else
@@ -95,12 +73,4 @@ public class Frog : Enemy
         }
     }
 
-   
-   
 }
-
-
-
-
-
-

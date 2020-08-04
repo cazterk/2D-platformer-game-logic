@@ -8,7 +8,6 @@ public class Headcollider : MonoBehaviour
     GameObject Enemy;
     public BoxCollider2D headcollider;
     
-
     // Start is called before the first frame update
     void Start()
     {
@@ -20,11 +19,13 @@ public class Headcollider : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D collision)
     {
-        //jump on frog
-        Frog frog = Enemy.GetComponent<Frog>();
-        frog.JumpedOn();
+        //jump on enemy
+        Enemy enemy = Enemy.GetComponent<Enemy>();
+        enemy.JumpedOn();
+        Debug.Log(" jump on enemy is triggering");
 
-           //*********unused*********//
+
+        //*********unused*********//
         // if (other.gameObject.name == headcollider.name)
         //Enemy.GetComponent<SpriteRenderer>().flipY = true;
         // Enemy.GetComponent<Collider2D>().enabled = false;
@@ -34,13 +35,7 @@ public class Headcollider : MonoBehaviour
 
 
 
-        Debug.Log(" jump on is triggering");
     }
-     void OnTriggerEnter2D(Collider other)
-    {
-        //jump on eagle
-        Eagle eagle = Enemy.GetComponent<Eagle>();
-        eagle.JumpedOnEagle();
+    
     }
-}
     

@@ -1,35 +1,47 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class PlayerMovenment : MonoBehaviour
 {
     private enum State { Idle, Running, Jumping, Hurt }
     private State state = State.Idle;
+
     public CharacterController2D controller;
     public Animator animator;
     public Rigidbody2D rb;
+
     public float runSpeed = 40f;
     float horizontalMove = 0f;
     bool jump = false;
     bool crouch = false;
+
     [SerializeField] private int coin = 0;
     [SerializeField] private Text coinText;
     [SerializeField] private float hurtforce = 10f;
 
+    public int maxHealth = 3;
+    public int currentHealth;
+    public HealthBar healthBar;
 
+    private Scene scene;
 
 
     void Start()
     {
+        currentHealth = maxHealth;
+        healthBar.SetMaxHealth(maxHealth);
 
+        scene = SceneManager.GetActiveScene();
+       
 
     }
 
 
 
-    // Update is called once per frame
+    // Update is called once per frame/////controlls and movements in this update method
     void Update()
     {
         horizontalMove = Input.GetAxisRaw("Horizontal") * runSpeed;
@@ -61,6 +73,7 @@ public class PlayerMovenment : MonoBehaviour
 
         }
         VelocityState();
+        Restart();
     }
 
 
@@ -87,7 +100,9 @@ public class PlayerMovenment : MonoBehaviour
 
         }
     }
-    // apply knockback effect to player
+
+
+    // apply knockback effect to player and hurt animation 
     void OnCollisionEnter2D(Collision2D other)
     {
 
@@ -112,16 +127,31 @@ public class PlayerMovenment : MonoBehaviour
             }
             state = State.Hurt;
             animator.SetBool("IsHurt", true);
+            TakeDamage(1);
 
 
-        }
-     
-
-
+        } 
+        
     }
 
+    //player takes damage
+    void TakeDamage(int damage)
+    {
+        currentHealth -= damage;
 
+        healthBar.SetHealth(currentHealth);
+    }
 
+    //player has hit max damage restart scene
+    void Restart()
+    {
+        if(currentHealth < 1)
+        {
+            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        }
+    }
+
+    //fixed update
         void FixedUpdate()
 
     {
@@ -130,6 +160,7 @@ public class PlayerMovenment : MonoBehaviour
         animator.SetBool("IsHurt", false);
     }
 
+// simple state machine that detect the current state of the player
     private void VelocityState()
     {
         if (state == State.Jumping)
@@ -147,14 +178,9 @@ public class PlayerMovenment : MonoBehaviour
            
         }
 
-        else if (state != State.Hurt)
-        {
-            animator.SetBool("IsHurt", false);
-        }
-
         else if (state == State.Hurt)
         {
-            Debug.Log("Ishurt is working");
+            Debug.Log("Is hurt is working");
            
         }
         else

@@ -2,16 +2,14 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Eagle : MonoBehaviour
+public class Eagle : Enemy
 {
-    public Animator animator;
-    public void JumpedOnEagle()
+
+    protected override void Start()
     {
-        animator.SetTrigger("Death");
+        base.Start();
+      
     }
-    public void Death()
-    {
-        Destroy(this.gameObject);
-    }
+
 }
 
