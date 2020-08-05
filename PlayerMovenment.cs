@@ -20,6 +20,7 @@ public class PlayerMovenment : MonoBehaviour
 
     [SerializeField] private int coin = 0;
     [SerializeField] private Text coinText;
+    public Text collectables;
     [SerializeField] private float hurtforce = 10f;
 
     public int maxHealth = 3;
@@ -33,6 +34,7 @@ public class PlayerMovenment : MonoBehaviour
     {
         currentHealth = maxHealth;
         healthBar.SetMaxHealth(maxHealth);
+        collectables.text = PlayerPrefs.GetInt("Collectables", 0).ToString();
 
         scene = SceneManager.GetActiveScene();
        
@@ -98,14 +100,27 @@ public class PlayerMovenment : MonoBehaviour
             coin += 1;
             coinText.text = coin.ToString();
 
+            if(coin > PlayerPrefs.GetInt("Collectables", 0))
+            {
+                PlayerPrefs.SetInt("Collectables", coin);
+                collectables.text = coin.ToString();
+            }
+            
+
         }
     }
 
+    public void Reset()
+    {
+        PlayerPrefs.DeleteKey("Collectables");
+        collectables.text = "0";
+    }
 
-    // apply knockback effect to player and hurt animation 
+
+    // apply knockback effect to player, give damage and trigger hurt animation 
     void OnCollisionEnter2D(Collision2D other)
     {
-
+        //hurtforce and hurt animation + damage(+1)
         if (other.gameObject.tag == "Enemy")
 
         {
@@ -130,7 +145,13 @@ public class PlayerMovenment : MonoBehaviour
             TakeDamage(1);
 
 
-        } 
+        }
+
+        //take player of the game by one hit
+        else if(other.gameObject.tag == "Killable")
+        {
+            TakeDamage(3);
+        }
         
     }
 
