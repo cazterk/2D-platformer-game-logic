@@ -12,6 +12,12 @@ public class PlayerMovenment : MonoBehaviour
     public CharacterController2D controller;
     public Animator animator;
     public Rigidbody2D rb;
+   
+    public AudioSource jumpclip;
+    public AudioSource footstep;
+    public AudioSource coinclip;
+    public AudioSource hit;
+
 
     public float runSpeed = 40f;
     float horizontalMove = 0f;
@@ -35,6 +41,9 @@ public class PlayerMovenment : MonoBehaviour
         currentHealth = maxHealth;
         healthBar.SetMaxHealth(maxHealth);
         collectables.text = PlayerPrefs.GetInt("Collectables", 0).ToString();
+
+        //jumpclip = gameObject.AddComponent<AudioSource>();
+        //footstep = gameObject.AddComponent<AudioSource>();
 
         scene = SceneManager.GetActiveScene();
        
@@ -105,7 +114,7 @@ public class PlayerMovenment : MonoBehaviour
                 PlayerPrefs.SetInt("Collectables", coin);
                 collectables.text = coin.ToString();
             }
-            
+            coinclip.Play();
 
         }
     }
@@ -143,6 +152,7 @@ public class PlayerMovenment : MonoBehaviour
             state = State.Hurt;
             animator.SetBool("IsHurt", true);
             TakeDamage(1);
+            hit.Play();
 
 
         }
@@ -181,7 +191,17 @@ public class PlayerMovenment : MonoBehaviour
         animator.SetBool("IsHurt", false);
     }
 
-// simple state machine that detect the current state of the player
+    private void Footstep()
+    {
+        footstep.Play();
+    }
+
+    private void JumpSound()
+    {
+        jumpclip.Play();
+    }
+
+    // simple state machine that detect the current state of the player
     private void VelocityState()
     {
         if (state == State.Jumping)

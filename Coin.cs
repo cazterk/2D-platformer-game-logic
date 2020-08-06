@@ -4,15 +4,22 @@ using UnityEngine;
 
 public class Coin : MonoBehaviour
 {
-    public int coinValue = 1;
+    public  AudioSource coin;
+    GameObject CollectableItems;
+    private Collider2D coll;
+
+    void Start()
+    {
+       
+        coll = GetComponent<Collider2D>();
+
+    }
     void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.gameObject.CompareTag("Player"))
-        {
-            ScoreManager.instance.ChangeScore(coinValue);
+       
+        coin.Play();
 
-        }
-    }
-
+        
+      }
 
     }

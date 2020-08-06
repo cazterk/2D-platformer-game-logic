@@ -5,11 +5,12 @@ using UnityEngine;
 public class Enemy : MonoBehaviour
 {
     [SerializeField]protected Animator animator;
-    
 
+    private AudioSource deathclip;
     protected virtual void Start()
     {
         animator.GetComponent<Animator>();
+        deathclip = GetComponent<AudioSource>();
     }
     public void JumpedOn()
     {
@@ -19,5 +20,10 @@ public class Enemy : MonoBehaviour
     public void Death()
     {
         Destroy(this.gameObject);
+    }
+
+    public void DeathClip()
+    {
+        deathclip.Play();
     }
 }
